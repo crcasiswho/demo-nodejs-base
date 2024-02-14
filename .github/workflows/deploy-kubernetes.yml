@@ -1,0 +1,27 @@
+name: Deploy to manifest to Kubernetes cluster
+
+on:
+  workflow_dispatch: # Manually trigger the workflow
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up kubectl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} # Use your DigitalOcean API token secret here
+          version: 'latest'
+
+      - name: Configure kubectl
+        run: doctl kubernetes cluster kubeconfig save herams-kubernetes-cluster
+
+      - name: Deploy to DigitalOcean Kubernetes
+        run: kubectl apply -k k8s/overlays/staging
+      
+      - name: Validate the application is running
+        run: kubectl get all -n staging
