@@ -1,4 +1,4 @@
-name: build-frontend-and-push-frontend-registry
+name: build-frontend-and-push-nodejs-registry
 
 on:
   push:
@@ -24,6 +24,6 @@ jobs:
         docker buildx create --use
         docker buildx build --push \
           --platform linux/amd64,linux/arm64 \
-          -t ghcr.io/crcasiswho/demo-nodejs-base:latest \
+          -t ghcr.io/demo-nodejs-base:latest \
           -f Dockerfile \
           .
